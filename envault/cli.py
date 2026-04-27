@@ -43,6 +43,7 @@ def get(key, vault, password):
     audit.record(vault, "get", key)
     if value is None:
         click.echo(f"Key '{key}' not found.", err=True)
+        raise SystemExit(1)
     else:
         click.echo(value)
 
@@ -74,16 +75,20 @@ def delete(key, vault, password):
         click.echo(f"✓ Deleted {key}")
     else:
         click.echo(f"Key '{key}' not found.", err=True)
+        raise SystemExit(1)
 
 
 @cli.command(name="audit-log")
 @click.option("--vault", default=DEFAULT_VAULT, show_default=True)
-def audit_log(vault):
+@click.option("--tail", default=0, help="Show only the last N entries (0 = all).")
+def audit_log(vault, tail):
     """Show the audit log for the vault."""
     entries = audit.get_log(vault)
     if not entries:
         click.echo("No audit entries found.")
         return
+    if tail > 0:
+        entries = entries[-tail:]
     for entry in entries:
         click.echo(
             f"{entry['timestamp']}  {entry['actor']:12s}  {entry['action']:8s}  {entry['key']}"

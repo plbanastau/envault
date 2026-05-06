@@ -49,10 +49,19 @@ envault template apply web --overwrite
 envault template delete web
 ```
 
+## Renaming a template
+
+```bash
+envault template rename web webserver
+```
+
+This renames the template `web` to `webserver` without modifying its keys or
+default values.
+
 ## Python API
 
 ```python
-from envault.templates import save_template, apply_template, list_templates
+from envault.templates import save_template, apply_template, list_templates, delete_template
 
 save_template("my.vault", "web", {"HOST": "localhost", "PORT": "8080"})
 
@@ -60,6 +69,9 @@ save_template("my.vault", "web", {"HOST": "localhost", "PORT": "8080"})
 written = apply_template("my.vault", "web", password="s3cr3t")
 
 print(list_templates("my.vault"))  # ['web']
+
+# Remove a template by name
+delete_template("my.vault", "web")
 ```
 
 ## Storage

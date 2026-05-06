@@ -21,7 +21,7 @@ def set_cmd(key: str, label: str, vault_path: str) -> None:
     """Set a display LABEL for KEY."""
     try:
         stored = set_label(vault_path, key, label)
-        click.echo(f"Label set: {key!r} → {stored!r}")
+        click.echo(f"Label set: {key!r} \u2192 {stored!r}")
     except LabelingError as exc:
         raise click.ClickException(str(exc)) from exc
 
@@ -52,13 +52,15 @@ def remove_cmd(key: str, vault_path: str) -> None:
 
 @label_group.command("list")
 @click.option("--vault", "vault_path", default="vault.enc", show_default=True)
-def list_cmd(vault_path: str) -> None:
-    """List all key labels."""
+@click.option("--sort", "sort_by", type=click.Choice(["key", "label"]), default="key", show_default=True, help="Sort output by key or label.")
+def list_cmd(vault_path: str, sort_by: str) -> None:
+    """List all key labels, optionally sorted by KEY or LABEL."""
     entries = list_labels(vault_path)
     if not entries:
         click.echo("No labels defined.")
         return
-    for entry in entries:
+    sorted_entries = sorted(entries, key=lambda e: e[sort_by].lower())
+    for entry in sorted_entries:
         click.echo(f"{entry['key']:<30} {entry['label']}")
 
 

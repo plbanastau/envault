@@ -63,6 +63,12 @@ def test_unregister_missing_hook_returns_false(vault_path):
     assert result is False
 
 
+def test_unregister_invalid_event_raises(vault_path):
+    """Unregistering from an unknown event should raise HooksError."""
+    with pytest.raises(HooksError, match="Unknown event"):
+        unregister_hook(vault_path, "on_magic", "echo x")
+
+
 def test_list_hooks_all_events_returned(vault_path):
     hooks = list_hooks(vault_path)
     assert set(hooks.keys()) == set(HOOK_EVENTS)

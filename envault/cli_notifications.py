@@ -57,8 +57,14 @@ def show_cmd(vault_path, channel):
 @notify_group.command("remove")
 @click.argument("vault_path")
 @click.argument("channel")
-def remove_cmd(vault_path, channel):
+@click.option("--yes", is_flag=True, help="Skip confirmation prompt.")
+def remove_cmd(vault_path, channel, yes):
     """Remove a notification channel."""
+    if not yes:
+        click.confirm(
+            f"Remove notification channel '{channel}' from '{vault_path}'?",
+            abort=True,
+        )
     removed = remove_channel(vault_path, channel)
     if removed:
         click.echo(f"Channel '{channel}' removed.")

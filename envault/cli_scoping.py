@@ -79,3 +79,16 @@ def clear_cmd(key: str, vault_path: str) -> None:
     """Remove all scope assignments for KEY."""
     clear_scopes(vault_path, key)
     click.echo(f"Cleared all scopes for '{key}'.")
+
+
+@scope_group.command("get")
+@click.argument("key")
+@click.option("--vault", "vault_path", default="vault.json", show_default=True)
+def get_cmd(key: str, vault_path: str) -> None:
+    """Show all scopes assigned to KEY."""
+    scopes = get_scopes(vault_path, key)
+    if not scopes:
+        click.echo(f"No scopes assigned to '{key}'.")
+    else:
+        for s in scopes:
+            click.echo(s)
